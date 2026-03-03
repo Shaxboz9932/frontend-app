@@ -19,8 +19,15 @@ export default function Signup() {
 
   const register = useUserStore((state) => state.register)
 
-  const handleSignUp = async(e) => {
-    e.preventDefault()
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    
+    // 1. Shartlarga rozilikni tekshirish (ixtiyoriy lekin muhim)
+    if (!checked) {
+      alert("Iltimos, shartlarga rozi bo'ling!");
+      return;
+    }
+  
     try {
       const response = await axios.post("https://django-backend-8bva.onrender.com/users/register/", {
         last_name: lastName,
@@ -28,15 +35,23 @@ export default function Signup() {
         email,
         username,
         password
-      })
-
-      register(email)
-      navigate('/verify-email')
-
-    }catch(error) {
-      console.log("Error: ", error)
+      });
+  
+      // Backenddan muvaffaqiyatli javob kelsa (200-201)
+      if (response.status === 201 || response.status === 200) {
+        console.log("Muvaffaqiyatli ro'yxatdan o'tildi");
+        
+        // Zustand store'ga saqlash
+        await register(email); 
+        
+        // Navigate funksiyasini chaqirish
+        navigate('/verify-email');
+      }
+    } catch (error) {
+      // Xatolikni to'liq ko'rish uchun:
+      console.error("Xatolik tafsilotlari:", error.response?.data || error.message);
     }
-  }
+  };
 
 
   const rememberMe = () => {
