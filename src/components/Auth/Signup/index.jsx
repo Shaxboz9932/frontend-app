@@ -44,7 +44,6 @@ export default function Signup() {
         // Zustand store'ga saqlash
         await register(email); 
         
-        // Navigate funksiyasini chaqirish
         navigate('/verify-email');
       }
     } catch (error) {
